@@ -98,7 +98,8 @@ std::unordered_set<int> Ransac(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, int ma
 		float b = (x2 - x1);
 		float c = (x1*y2 - x2*y1);
 
-		for(int i =0; i < cloud->points.size(); i++){
+		int pointSize = cloud->points.size();
+		for(int i =0; i < pointSize; i++){
 			// if inliers contains i it will return value greater than 0
 			if(inliers.count(i) > 0)
 				continue;
