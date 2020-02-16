@@ -31,10 +31,10 @@ struct KdTree
 			*node = new Node(point, id);
 		}else{
 			int cd = depth % 2;
-			if(point[cd] < (*node)->point[cd])
-				insertHelper(&((*node)->left), ++depth, point, id );
+			if(point[cd] < ((*node)->point[cd]))
+				insertHelper(&((*node)->left), depth+1, point, id );
 			else
-				insertHelper(&((*node)->right), ++depth, point, id );
+				insertHelper(&((*node)->right), depth+1, point, id );
 		}
 	}
 
@@ -42,11 +42,7 @@ struct KdTree
 	{
 		// TODO: Fill in this function to insert a new point into the tree
 		// the function should create a new node and place correctly with in the root 
-		if(root == NULL)
-			root = new Node(point, id);
-		else {
-			insertHelper(&root, 0, point, id );
-		}
+		insertHelper(&root, 0, point, id );
 	}
 
 	void searchHelper(std::vector<float> target, Node *node, int depth, float distanceTol, std::vector<int>& ids)
@@ -54,16 +50,20 @@ struct KdTree
 		if(node != NULL)
 		{
 			std::vector<float> point = node->point;
-			int cd = depth % 2;
-			if( (point[0] >= ( target[0] - distanceTol )) && ( point[0] <= (target[0] + distanceTol) ) && ( point[1] >= ( target[1] - distanceTol ) ) && ( point[1] <= target[1] + distanceTol ) ){
+
+			if( (point[0] >= (target[0] - distanceTol) && point[0] <= (target[0] + distanceTol)) 
+				&& (point[1] >= (target[1] - distanceTol) && point[1] <= (target[1] + distanceTol)) ){
 				float distance = sqrt( (point[0] - target[0])*(point[0] - target[0]) + (point[1] - target[1])*(point[1] - target[1]) );
 				if (distance <= distanceTol)
 					ids.push_back(node->id);
 			}
+
+			int cd = depth % 2;
+
 			if ((target[cd] - distanceTol) < point[cd] )
-				searchHelper( target, node->left, ++depth, distanceTol, ids );
-			if ((target[cd] - distanceTol) > point[cd] )
-				searchHelper( target, node->right, ++depth, distanceTol, ids );
+				searchHelper( target, node->left, depth+1, distanceTol, ids );
+			if ((target[cd] + distanceTol) > point[cd] )
+				searchHelper( target, node->right, depth+1, distanceTol, ids );
 		}
 	}
 
@@ -77,7 +77,6 @@ struct KdTree
 
 		return ids;
 	}
-	
 
 };
 

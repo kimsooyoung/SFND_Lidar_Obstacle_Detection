@@ -75,13 +75,36 @@ void render2DTree(Node* node, pcl::visualization::PCLVisualizer::Ptr& viewer, Bo
 
 }
 
+
+void clusterHelper(int id, const std::vector<std::vector<float>>& points, std::vector<int> &cluster, std::vector<bool> &isProcessed, KdTree* tree, float distanceTol){
+	isProcessed[id] = true;
+	cluster.push_back(id);
+	
+	std::vector<int> nearby = tree->search( points[id], distanceTol);
+	
+	for(int index: nearby){
+		if( isProcessed[index] == false )
+			clusterHelper( index, points, cluster, isProcessed, tree, distanceTol );
+	}
+}
+
 std::vector<std::vector<int>> euclideanCluster(const std::vector<std::vector<float>>& points, KdTree* tree, float distanceTol)
 {
-
-	// TODO: Fill out this function to return list of indices for each cluster
-
 	std::vector<std::vector<int>> clusters;
- 
+	std::vector<bool> isProcessed(points.size(), false);
+
+	for( int i =0; i < points.size(); i++ ){
+		std::cout << i << std::endl;
+
+		if(isProcessed[i] == true)
+			continue;
+
+		std::vector<int> cluster;
+		clusterHelper(i, points, cluster, isProcessed, tree, distanceTol);
+
+		clusters.push_back(cluster);
+	}
+
 	return clusters;
 
 }
@@ -145,5 +168,7 @@ int main ()
   	{
   	  viewer->spinOnce ();
   	}
+
+	delete tree;
   	
 }
