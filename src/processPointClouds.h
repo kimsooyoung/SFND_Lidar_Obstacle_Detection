@@ -4,6 +4,7 @@
 #define PROCESSPOINTCLOUDS_H_
 
 #include <pcl/io/pcd_io.h>
+#include <pcl/common/pca.h> // for PCA BOX
 #include <pcl/common/common.h>
 #include <pcl/filters/extract_indices.h>
 #include <pcl/filters/voxel_grid.h>
@@ -39,6 +40,8 @@ public:
     std::vector<typename pcl::PointCloud<PointT>::Ptr> Clustering(typename pcl::PointCloud<PointT>::Ptr cloud, float clusterTolerance, int minSize, int maxSize);
 
     Box BoundingBox(typename pcl::PointCloud<PointT>::Ptr cluster);
+
+    BoxQ PCABoundingBox(typename pcl::PointCloud<PointT>::Ptr cluster);
 
     void savePcd(typename pcl::PointCloud<PointT>::Ptr cloud, std::string file);
 

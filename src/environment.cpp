@@ -49,7 +49,7 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
     Lidar *lidar =  new Lidar(cars, 0);
     pcl::PointCloud<pcl::PointXYZ>::Ptr inputCloud = lidar->scan();
     // renderRays(viewer, lidar->position, inputCloud);
-    renderPointCloud(viewer, inputCloud, "inputCloud");
+    // renderPointCloud(viewer, inputCloud, "inputCloud");
 
     // TODO:: Create point processor
     ProcessPointClouds<pcl::PointXYZ> *pointProcessor = new ProcessPointClouds<pcl::PointXYZ>();
@@ -64,14 +64,22 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
     {
         std::cout << "cluster size ";   
         pointProcessor->numPoints(cluster);
+
+        // Box box = pointProcessor->BoundingBox(cluster);
+        BoxQ boxQ = pointProcessor->PCABoundingBox(cluster);
+        
+        // renderBox(viewer,box,clusterId);
+        renderBox(viewer,boxQ,clusterId);
+
         renderPointCloud(viewer,cluster,"obstCloud"+std::to_string(clusterId),colors[clusterId]);
 
         ++clusterId;
     }
 
-
     // renderPointCloud(viewer, segmentCloud.first, "obstacle", Color(0,1,0));
     // renderPointCloud(viewer, segmentCloud.second, "ground", Color(1,0,0));
+    delete pointProcessor;
+    delete lidar;
 }
 
 
