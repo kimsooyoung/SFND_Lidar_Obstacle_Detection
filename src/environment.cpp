@@ -97,6 +97,16 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer)
     renderPointCloud(viewer,filterCloud,"filterCloud");
     // renderPointCloud(viewer,inputCloud,"inputCloud");
 
+    Box box;
+    box.x_min = -1.5;
+    box.x_max = 2.6;
+    box.y_min = -1.7;
+    box.y_max = 1.7;
+    box.z_min = -1;
+    box.z_max = -0.4;
+
+    renderBox(viewer,box,0);
+
     delete pointProcessorI;
 }
 
