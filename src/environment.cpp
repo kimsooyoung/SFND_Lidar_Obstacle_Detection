@@ -58,7 +58,7 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> cloudClusters = pointProcessor->Clustering(segmentCloud.first, 1.0, 3, 30);
 
     int clusterId = 0;
-    std::vector<Color> colors = {Color(1,0,0), Color(1,1,0), Color(0,0,1)};
+    std::vector<Color> colors = {Color(1,0,1), Color(1,1,0), Color(0,1,1)};
 
     for(pcl::PointCloud<pcl::PointXYZ>::Ptr cluster : cloudClusters)
     {
@@ -91,11 +91,41 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer)
 
     ProcessPointClouds<pcl::PointXYZI> *pointProcessorI = new ProcessPointClouds<pcl::PointXYZI>();
     pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloud = pointProcessorI->loadPcd("../src/sensors/data/pcd/data_1/0000000000.pcd");
+    
     // Experiment with the ? values and find what works best
     float X{ 30.0 }, Y{ 6.5 }, Z{ 2.5 };
     pcl::PointCloud<pcl::PointXYZI>::Ptr filterCloud = pointProcessorI->FilterCloud(inputCloud, 0.1f , Eigen::Vector4f(-(X / 2), -Y, -Z, 1), Eigen::Vector4f(X, Y, Z, 1));
-    renderPointCloud(viewer,filterCloud,"filterCloud");
+    
+    std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr> segmentCloud = pointProcessorI->SegmentPlane(filterCloud, 100, 0.2);
+
+    std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = pointProcessorI->Clustering(segmentCloud.first, 0.35, 30, 1775);
+
+    int clusterId = 0;
+    std::vector<Color> colors = {Color(1,0,0), Color(1,1,0), Color(0,0,1)};
+
+    for(pcl::PointCloud<pcl::PointXYZI>::Ptr cluster : cloudClusters)
+    {
+        std::cout << "cluster size ";   
+        pointProcessorI->numPoints(cluster);
+
+        Box box = pointProcessorI->BoundingBox(cluster);
+        // pcl::PointCloud<pcl::PointXYZ>::Ptr cluster_xyz;
+        
+        // todo: PCA Box with PointXYZI type
+        // BoxQ boxQ = pointProcessorI->PCABoundingBox(cluster);
+        
+        renderBox(viewer,box,clusterId);
+        // renderBox(viewer,boxQ,clusterId);
+
+        renderPointCloud(viewer,cluster,"obstCloud"+std::to_string(clusterId),colors[clusterId]);
+
+        ++clusterId;
+    }
+
+    // renderPointCloud(viewer,filterCloud,"filterCloud");
     // renderPointCloud(viewer,inputCloud,"inputCloud");
+    // renderPointCloud(viewer, segmentCloud.first, "obstacle", Color(0,0,1));
+    renderPointCloud(viewer, segmentCloud.second, "ground", Color(0,1,0));
 
     Box box;
     box.x_min = -1.5;
