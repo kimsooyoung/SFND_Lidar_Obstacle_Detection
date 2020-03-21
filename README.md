@@ -62,3 +62,28 @@ NOTE: very old version
 [PCL Source Github](https://github.com/PointCloudLibrary/pcl)
 
 [PCL Mac Compilation Docs](http://www.pointclouds.org/documentation/tutorials/compiling_pcl_macosx.php)
+
+## Additional works for project submission
+
+> implement own Clustering/Segmentation algorithms, using RANSAC, KD-Tree, and Euclidean clustering that learned from previsous lessons. 
+
+#### 1. Segmentation using RANSAC 
+
+See `RANSAC3DSegment` function in `processPointClouds.h`
+
+```c++
+std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> RANSAC3DSegment(typename pcl::PointCloud<PointT>::Ptr cloud, int maxIterations, float distanceThreshold);
+
+```
+
+#### 2. Clustering using KD-Tree, and Euclidean Proximity
+
+See `EuclideanClustering`, `euclideanCluster`, `clusterHelper` function in `processPointClouds.h`
+
+```c++
+void clusterHelper(int pointIdx, const std::vector<std::vector<float>>& points, std::vector<int>& cluster, std::vector<bool>& processed, KdTree* tree, float distanceTol);
+
+std::vector<std::vector<int>> euclideanCluster(const std::vector<std::vector<float>>& points, KdTree* tree, float distanceTol);
+
+std::vector<typename pcl::PointCloud<PointT>::Ptr> EuclideanClustering(typename pcl::PointCloud<PointT>::Ptr cloud, float clusterTolerance, int minSize, int maxSize);
+```
