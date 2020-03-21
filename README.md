@@ -1,5 +1,9 @@
 # Sensor Fusion Self-Driving Car Course
 
+### Project Status:
+
+![issue_badge](https://img.shields.io/badge/build-Passing-green) ![issue_badge](https://img.shields.io/badge/UdacityRubric-Passing-green)
+
 <img src="media/ObstacleDetectionFPS.gif" width="700" height="400" />
 
 ### Welcome to the Sensor Fusion course for self-driving cars.
