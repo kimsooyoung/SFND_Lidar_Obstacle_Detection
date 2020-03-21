@@ -190,17 +190,23 @@ std::unordered_set<int> Ransac3D(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, int 
 
 int main ()
 {
-
+	bool data3D = true;
 	// Create viewer
 	pcl::visualization::PCLVisualizer::Ptr viewer = initScene();
 
-	// Create data
-	// pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = CreateData();
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = CreateData3D();
+	// 2D data
+	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = CreateData();
+	std::unordered_set<int> inliers = Ransac(cloud, 10, 1.0);
+	
+	if (data3D){
+		// Create data
+		// pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = CreateData3D();
+		cloud = CreateData3D();
+		// TODO: Change the max iteration and distance tolerance arguments for Ransac function
+		// std::unordered_set<int> inliers = Ransac3D(cloud, 500, 0.5);
+		inliers = Ransac3D(cloud, 500, 0.5);
+	}
 
-	// TODO: Change the max iteration and distance tolerance arguments for Ransac function
-	// std::unordered_set<int> inliers = Ransac(cloud, 10, 1.0);
-	std::unordered_set<int> inliers = Ransac3D(cloud, 500, 0.5);
 
 	pcl::PointCloud<pcl::PointXYZ>::Ptr  cloudInliers(new pcl::PointCloud<pcl::PointXYZ>());
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutliers(new pcl::PointCloud<pcl::PointXYZ>());
