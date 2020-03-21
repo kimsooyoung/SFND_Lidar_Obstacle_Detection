@@ -8,8 +8,6 @@
 // using templates for processPointClouds so also include .cpp to help linker
 #include "processPointClouds.cpp"
 
-std::string MODE = "highway";
-
 std::vector<Car> initHighway(bool renderScene, pcl::visualization::PCLVisualizer::Ptr& viewer)
 {
 
@@ -94,6 +92,16 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
     delete lidar;
 }
 
+void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer)
+{
+  // ----------------------------------------------------
+  // -----Open 3D viewer and display City Block     -----
+  // ----------------------------------------------------
+
+  ProcessPointClouds<pcl::PointXYZI>* pointProcessorI = new ProcessPointClouds<pcl::PointXYZI>();
+  pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloud = pointProcessorI->loadPcd("../src/sensors/data/pcd/data_1/0000000000.pcd");
+  renderPointCloud(viewer,inputCloud,"inputCloud");
+}
 
 void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointClouds<pcl::PointXYZI>* pointProcessorI, const pcl::PointCloud<pcl::PointXYZI>::Ptr& inputCloud)
 {
@@ -128,8 +136,8 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointCloud
         // todo: PCA Box with PointXYZI type
         // BoxQ boxQ = pointProcessorI->PCABoundingBox(cluster);
         
-        renderBox(viewer,box,clusterId);
         // renderBox(viewer,boxQ,clusterId);
+        renderBox(viewer,box,clusterId);
 
         ++clusterId;
     }
@@ -148,8 +156,6 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointCloud
     // box.z_max = -0.4;
 
     // renderBox(viewer,box,0);
-
-    // delete pointProcessorI;
 }
 
 //setAngle: SWITCH CAMERA ANGLE {XY, TopDown, Side, FPS}
@@ -178,15 +184,20 @@ void initCamera(CameraAngle setAngle, pcl::visualization::PCLVisualizer::Ptr& vi
 
 int main (int argc, char** argv)
 {
-    MODE = "highway";
-    std::cout << "starting enviroment" << std::endl;
+    std::string MODE = "cityBlock";
+    std::string STREAM_FILE = "../src/sensors/data/pcd/data_2";
+
+    std::cout << "starting enviroment, MODE : " << MODE << std::endl;
 
     pcl::visualization::PCLVisualizer::Ptr viewer (new pcl::visualization::PCLVisualizer ("3D Viewer"));
     CameraAngle setAngle = FPS;
     initCamera(setAngle, viewer);
 
-    if (MODE == "highway"){
-        simpleHighway(viewer);
+    if (MODE != "cityBlock"){
+        if (MODE == "simpleHighway")
+            simpleHighway(viewer);
+        else if (MODE == "simpleCityBlock")
+            cityBlock(viewer);
         while (!viewer->wasStopped ())
         {
             viewer->spinOnce ();
@@ -195,7 +206,7 @@ int main (int argc, char** argv)
     }
     
     ProcessPointClouds<pcl::PointXYZI>* pointProcessorI = new ProcessPointClouds<pcl::PointXYZI>();
-    std::vector<boost::filesystem::path> stream = pointProcessorI->streamPcd("../src/sensors/data/pcd/data_1");
+    std::vector<boost::filesystem::path> stream = pointProcessorI->streamPcd(STREAM_FILE);
     auto streamIterator = stream.begin();
         
     pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloudI;
