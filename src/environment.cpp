@@ -139,6 +139,16 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr &viewer, ProcessPointCloud
     int clusterId = 0;
     std::vector<Color> colors = {Color(1, 0, 0), Color(0, 1, 0), Color(0, 0, 1)};
 
+    // Box box;
+    // box.x_min = -1.5;
+    // box.x_max = 2.6;
+    // box.y_min = -1.7;
+    // box.y_max = 1.7;
+    // box.z_min = -1;
+    // box.z_max = -0.4;
+
+    // renderBox(viewer, box, 0);
+
     for (pcl::PointCloud<pcl::PointXYZI>::Ptr cluster : cloudClusters)
     {
         std::cout << "cluster size ";
@@ -159,16 +169,6 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr &viewer, ProcessPointCloud
     // renderPointCloud(viewer,inputCloud,"inputCloud");
     // renderPointCloud(viewer, segmentCloud.first, "obstacle", Color(0,0,1));
     renderPointCloud(viewer, segmentCloud.second, "ground", Color(0, 1, 0));
-
-    // Box box;
-    // box.x_min = -1.5;
-    // box.x_max = 2.6;
-    // box.y_min = -1.7;
-    // box.y_max = 1.7;
-    // box.z_min = -1;
-    // box.z_max = -0.4;
-
-    // renderBox(viewer, box, 0);
 }
 
 //setAngle: SWITCH CAMERA ANGLE {XY, TopDown, Side, FPS}
